@@ -76,10 +76,42 @@ namespace BotRiveGosh.Scenarios.Scenario
             string text = "";
             foreach(var l in list)
             {
-                text += $"{l.Name}\n{l.Shop}\nВсего чеков: {l.TotalChecks}\nЧеков со спец позиц: {l.SpChecks}\n" +
-                    $"Результат: {l.Result}\n-------------------\n";
+                text += $"{l.Name}\n{l.Shop} (кат {l.Category})\nВсего чеков: {l.TotalChecks} Рез-т: {l.Result}\n" +
+                    $"Премия кассир: {CalculateKpi(l).Cashier}\nПремия продавец: {CalculateKpi(l).Sales}\n-------------------\n";
             }
             return text;
+        }
+
+        private KpiCalculate CalculateKpi(KpiResult kpiResult)
+        {
+            var result = new KpiCalculate() { Cashier = 5000, Sales = 5000 };
+            int salesLimit = 250;
+            int cashierLimit = 250;
+            if (kpiResult.Category == "C") salesLimit = 200;
+            if (kpiResult.Result > 7.0m)
+            {
+                result.Sales = 0; result.Cashier = 0;
+                return result;
+            }
+            
+            if (kpiResult.Result > 5.0m)
+            {
+                result.Sales = 4000; result.Cashier = 4000;
+            }
+
+            if (result.Cashier == 5000 && kpiResult.TotalChecks > 800) result.Cashier = 7000;
+
+            //проверка на лимит
+            if (kpiResult.TotalChecks < salesLimit) result.Sales = 0;
+            if (kpiResult.TotalChecks < cashierLimit) result.Cashier = 0;
+
+            return result;
+        }
+
+        private class KpiCalculate
+        {
+            public int Sales { get; set; }
+            public int Cashier { get; set; } 
         }
 
     }

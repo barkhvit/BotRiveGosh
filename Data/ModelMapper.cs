@@ -11,16 +11,6 @@ namespace BotRiveGosh.Data
 {
     internal static class ModelMapper
     {
-        //int Id { get; set; }
-        //string NameBU { get; set; } = "";
-        //string NameUU { get; set; } = "";
-        //string NameQV { get; set; } = "";
-        //string Region { get; set; } = "";
-        //string City { get; set; } = "";
-        //string Location { get; set; } = "";
-        //string Category { get; set; } = "";
-        //double RK { get; set; }
-        //double SN { get; set; }
         public static ShopsModel MapToModel(Shops entity)
         {
             return new ShopsModel
@@ -92,6 +82,7 @@ namespace BotRiveGosh.Data
             return new KpiResult
             {
                 Shop = model.Shop,
+                Category = model.Category,
                 Name = model.Name,
                 TotalChecks = model.TotalChecks,
                 SpChecks = model.SpChecks,
@@ -103,6 +94,7 @@ namespace BotRiveGosh.Data
             return new KpiResultModel
             {
                 Shop = entity.Shop,
+                Category = entity.Category,
                 Name = entity.Name,
                 TotalChecks = entity.TotalChecks,
                 SpChecks = entity.SpChecks,

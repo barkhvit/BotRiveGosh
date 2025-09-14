@@ -47,10 +47,14 @@ CREATE TABLE shops (
 );
 
 
+-- FUNCTION: public.get_kpi(text, date)
+
+-- DROP FUNCTION IF EXISTS public.get_kpi(text, date);
+
 --CREATE OR REPLACE FUNCTION public.get_kpi(
 --	p_name_pattern text,
 --	p_date date)
---    RETURNS TABLE(shop text, name text, total_checks bigint, sp_checks bigint, result numeric) 
+--    RETURNS TABLE(shop text, category text, name text, total_checks bigint, sp_checks bigint, result numeric) 
 --    LANGUAGE 'plpgsql'
 --    COST 100
 --    VOLATILE PARALLEL UNSAFE
@@ -61,6 +65,7 @@ CREATE TABLE shops (
 --    RETURN QUERY
 --    SELECT 
 --        s.nameqv::TEXT AS shop,  -- Явное приведение к TEXT
+--		s.category::TEXT as category, -- категория магазина
 --        k.name::TEXT AS name,     -- Явное приведение к TEXT
 --        SUM(k.checks)::BIGINT AS total_checks,
 --        SUM(k.specialchecks)::BIGINT AS sp_checks,
@@ -81,6 +86,7 @@ CREATE TABLE shops (
 --        AND k.date < DATE_TRUNC('month', p_date) + INTERVAL '1 month'
 --    GROUP BY 
 --        s.nameqv, 
+--        s.category,
 --        k.name
 --    ORDER BY 
 --        s.nameqv, 
@@ -94,25 +100,26 @@ CREATE TABLE shops (
 --COMMENT ON FUNCTION public.get_kpi(text, date)
 --    IS 'Возвращает KPI показатели по фильтру имени за указанный месяц';
 
------------------------------------------------------
+------------------------------
 
+-- FUNCTION: public.get_kpi(text)
 
---CREATE OR REPLACE FUNCTION get_kpi(
---    p_name_pattern TEXT
---)
---RETURNS TABLE (
---    shop TEXT,
---    name TEXT,
---    total_checks BIGINT,
---    sp_checks BIGINT,
---    result DECIMAL(10,2)
---)
---LANGUAGE plpgsql
---AS $$
+-- DROP FUNCTION IF EXISTS public.get_kpi(text);
+
+--CREATE OR REPLACE FUNCTION public.get_kpi(
+--	p_name_pattern text)
+--    RETURNS TABLE(shop text, category text, name text, total_checks bigint, sp_checks bigint, result numeric) 
+--    LANGUAGE 'plpgsql'
+--    COST 100
+--    VOLATILE PARALLEL UNSAFE
+--    ROWS 1000
+
+--AS $BODY$
 --BEGIN
 --    RETURN QUERY
 --    SELECT 
 --        s.nameqv::TEXT AS shop,  -- Явное приведение к TEXT
+--		s.category::TEXT as category, -- категория магазина
 --        k.name::TEXT AS name,     -- Явное приведение к TEXT
 --        SUM(k.checks)::BIGINT AS total_checks,
 --        SUM(k.specialchecks)::BIGINT AS sp_checks,
@@ -131,11 +138,18 @@ CREATE TABLE shops (
 --        LOWER(k.name) LIKE LOWER('%' || p_name_pattern || '%')
 --    GROUP BY 
 --        s.nameqv, 
+--        s.category,
 --        k.name
 --    ORDER BY 
 --        s.nameqv, 
 --        k.name;
 --END;
---$$;
+--$BODY$;
 
---COMMENT ON FUNCTION get_kpi(TEXT) IS 'Возвращает KPI показатели по фильтру имени за указанный месяц';
+--ALTER FUNCTION public.get_kpi(text)
+--    OWNER TO postgres;
+
+--COMMENT ON FUNCTION public.get_kpi(text)
+--    IS 'Возвращает KPI показатели по фильтру имени за указанный месяц';
+
+
