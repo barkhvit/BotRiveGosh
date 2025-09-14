@@ -10,6 +10,7 @@ namespace BotRiveGosh.Data.Models
     public class KpiResultModel
     {
         [Column("shop")]public string Shop { get; set; }
+        [Column("category")] public string Category { get; set; }
         [Column("name")]public string Name { get; set; }
         [Column("total_checks")]public long TotalChecks { get; set; }
         [Column("sp_checks")]public long SpChecks { get; set; }
