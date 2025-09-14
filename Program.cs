@@ -10,6 +10,9 @@ using BotRiveGosh.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 using Telegram.Bot;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting.WindowsServices;
+using Microsoft.Extensions.Logging;
 
 namespace BotRiveGosh
 {
@@ -17,42 +20,40 @@ namespace BotRiveGosh
     {
         static async Task Main(string[] args)
         {
-            IServiceCollection services = new ServiceCollection();
-            ConfigureServices(services);
-
-            // Создаем провайдер сервисов
-            var serviceProvider = services.BuildServiceProvider();
-
-            // Создаем CancellationTokenSource
-            var cts = new CancellationTokenSource();
-
-            // Регистрируем CancellationToken в контейнере (опционально)
-            services.AddSingleton(cts);
-
-            // Перестраиваем провайдер с учетом новых сервисов
-            serviceProvider = services.BuildServiceProvider();
-
-            // Создаем и запускаем бота через DI
-            using var scope = serviceProvider.CreateScope();
-            var botClient = scope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
-            var mainHandler = scope.ServiceProvider.GetRequiredService<MainHandler>();
-
-            //прослушка бота
             try
             {
-                botClient.StartReceiving(
-                updateHandler: mainHandler.HandleUpdateAsync,
-                errorHandler: mainHandler.HandleErrorAsync,
-                cancellationToken: cts.Token);
+                IHost host = Host.CreateDefaultBuilder(args)
+                .UseWindowsService(options =>
+                {
+                    options.ServiceName = "BotRiveGoshService";
+                })
+                .ConfigureServices(ConfigureServices)
+                .ConfigureLogging(logging =>
+                {
+                    logging.AddConsole();
+                    logging.AddDebug();
+                    logging.AddEventLog(settings =>
+                    {
+                        settings.SourceName = "BotRiveGoshService";
+                    });
+                })
+                .Build();
 
-                Console.WriteLine("Бот запущен");
-
-                await Task.Delay(-1, cts.Token);
+                await host.RunAsync();
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine($"Критическая ошибка: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                // Логируйте в файл или другую систему
+                File.WriteAllText("crash_log.txt", ex.ToString());
+
+                // Даем время прочитать сообщение перед закрытием
+                Console.WriteLine("Нажмите любую клавишу для выхода...");
+                Console.ReadKey();
             }
+
+            
         }
 
         private static void ConfigureServices(IServiceCollection services)
@@ -60,7 +61,8 @@ namespace BotRiveGosh
             // Регистрируем бота
             services.AddSingleton<ITelegramBotClient>(sp =>
             {
-                string token = Environment.GetEnvironmentVariable("Bot_RiveGosh", EnvironmentVariableTarget.User);
+                string token = "6827114928:AAHf39H0HP_tTJ1El0SFnE-MjJAxQqJJYW8";
+                //string token = Environment.GetEnvironmentVariable("Bot_RiveGosh", EnvironmentVariableTarget.User);
                 return new TelegramBotClient(token);
             });
 
@@ -108,6 +110,9 @@ namespace BotRiveGosh
                     new ShowKpiResultScenario(kpiResultService)
                 };
             });
+
+            // Фоновый сервис для бота
+            services.AddHostedService<BotBackgroundService>();
 
         }
     }
