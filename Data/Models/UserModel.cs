@@ -16,5 +16,6 @@ namespace BotRiveGosh.Data.Models
         [Column("firstname")] public string? FirstName { get; set; }
         [Column("lastname")] public string? LastName { get; set; }
         [Column("createdat")] public DateTime CreatedAt { get; set; }
+        [Column("accessallowed")] public bool AccessAllowed { get; set; }
     }
 }

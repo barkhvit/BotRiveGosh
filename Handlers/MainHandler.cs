@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace BotRiveGosh.Handlers
 {
@@ -52,6 +53,10 @@ namespace BotRiveGosh.Handlers
             {
                 var (chatId, userId, messageId, Text, user) = MessageInfo.GetMessageInfo(update);
 
+                //проверка доступа
+                var accessPossible =  await CheckAccessAllowed(botClient, update, ct);
+                if (!accessPossible) return;
+
                 //логирование
                 //Logger.Log("Начало");
                 Console.WriteLine($"{user.Id}:{update.Type}:{Text}");
@@ -74,8 +79,6 @@ namespace BotRiveGosh.Handlers
                     await _commandsForMainMenu.ShowMainMenu(update, ct);
                     return;
                 }
-
-                
 
                 //проверка, есть ли у пользователя сценарий
                 var context = await _scenarioContextRepository.GetContext(userId, ct);
@@ -162,6 +165,33 @@ namespace BotRiveGosh.Handlers
             throw new NotImplementedException();
         }
 
+        private async Task<bool> CheckAccessAllowed(ITelegramBotClient botClient, Update update, CancellationToken ct)
+        {
+            var (chatId, userId, messageId, Text, user) = MessageInfo.GetMessageInfo(update);
+            var inputUser = await _userService.GetOrCreateUserAsync(update, ct);
+
+            //если нет доступа
+            if (!inputUser.AccessAllowed) 
+            {
+                
+                if (update.Type == Telegram.Bot.Types.Enums.UpdateType.CallbackQuery)
+                {
+                    await botClient.AnswerCallbackQuery(update.CallbackQuery.Id, cancellationToken: ct);
+
+                    //если это запрос доступа возвращаем true и пропускаем дальше
+                    var dto = CallBackDto.FromString(Text);
+                    if (dto.Object == Dto_Objects.Reg && dto.Action == Dto_Action.RegRequest)
+                        return true;
+                }
+                    
+                await botClient.SendMessage(chatId, "У вас нет доступа. Можете запросить.",
+                    cancellationToken: ct,
+                    replyMarkup: new InlineKeyboardMarkup(InlineKeyboardButton.WithCallbackData("Запросить доступ.",
+                        new CallBackDto(Dto_Objects.Reg, Dto_Action.RegRequest, inputUser.Id).ToString())));
+                return false;
+            }
+            return true;
+        }
         
     }
 }

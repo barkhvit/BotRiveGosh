@@ -12,6 +12,7 @@
     <PackageReference Include="linq2db.PostgreSQL" Version="5.4.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
     <PackageReference Include="Npgsql" Version="9.0.3" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.9" />
     <PackageReference Include="Telegram.Bot" Version="22.6.2" />
 
 	<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.8" />

@@ -13,5 +13,6 @@ namespace BotRiveGosh.Data.Repository.Interfaces
         Task<User?> GetByTelegramIdAsync(long telegramId, CancellationToken ct);
         Task CreateAsync(User user, CancellationToken ct);
         Task<bool> ExistsAsync(long telegramId, CancellationToken ct);
+        Task<bool> UpdateAsync(User user, CancellationToken ct);
     }
 }

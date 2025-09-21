@@ -1,5 +1,6 @@
 ﻿using BotRiveGosh.Core.Common.Enums;
 using BotRiveGosh.Core.DTOs;
+using BotRiveGosh.Handlers.Keyboards;
 using BotRiveGosh.Helpers;
 using System;
 using System.Collections.Generic;
@@ -24,28 +25,18 @@ namespace BotRiveGosh.Handlers.Commands
         public async Task ShowMainMenu(Update update, CancellationToken ct, MessageType messageType = MessageType.defaultMessage)
         {
             var (chatId, userId, messageId, Text, user) = MessageInfo.GetMessageInfo(update);
-            List<List<InlineKeyboardButton>> buttons = new()
-            {
-                new List<InlineKeyboardButton>()
-                {
-                    InlineKeyboardButton.WithCallbackData("Kpi кассира",new CallBackDto(Dto_Objects.Kpi, Dto_Action.ShowMenu).ToString())
-                },
-                new List<InlineKeyboardButton>()
-                {
-                    InlineKeyboardButton.WithCallbackData("О боте", new CallBackDto(Dto_Objects.AboutBot, Dto_Action.AboutBotShow).ToString())
-                }
-            };
+            
             if(update.Type == Telegram.Bot.Types.Enums.UpdateType.CallbackQuery && messageType != MessageType.newMessage)
             {
                 await _botClient.AnswerCallbackQuery(update.CallbackQuery.Id, cancellationToken: ct);
                 await _botClient.EditMessageText(chatId, messageId, "Выберите пункт меню:",
-                    replyMarkup: new InlineKeyboardMarkup(buttons), cancellationToken:ct);
+                    replyMarkup: GetKeybords.MainMenu(), cancellationToken:ct);
                 return;
             }
             if (update.Type == Telegram.Bot.Types.Enums.UpdateType.CallbackQuery) await _botClient.AnswerCallbackQuery(update.CallbackQuery.Id, cancellationToken: ct);
 
             await _botClient.SendMessage(chatId, "Выберите пункт меню:",
-                    replyMarkup: new InlineKeyboardMarkup(buttons), cancellationToken: ct);
+                    replyMarkup: GetKeybords.MainMenu(), cancellationToken: ct);
         }
 
         internal async Task ShowAboutBot(Update update, CancellationToken ct)

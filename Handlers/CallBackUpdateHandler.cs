@@ -18,12 +18,14 @@ namespace BotRiveGosh.Handlers
         private readonly CommandsForKpi _commandsForKpi;
         private readonly CommandsForMainMenu _commandsForMainMenu;
         private readonly CommandsForUpdate _commandsForUpdate;
+        private readonly CommandsForRegistration _commandsForRegistration;
         public CallBackUpdateHandler(CommandsForKpi commandsForKpi, CommandsForMainMenu commandsForMainMenu,
-            CommandsForUpdate commandsForUpdate)
+            CommandsForUpdate commandsForUpdate, CommandsForRegistration commandsForRegistration)
         {
             _commandsForKpi = commandsForKpi;
             _commandsForMainMenu = commandsForMainMenu;
             _commandsForUpdate = commandsForUpdate;
+            _commandsForRegistration = commandsForRegistration;
         }
 
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken ct)
@@ -56,6 +58,14 @@ namespace BotRiveGosh.Handlers
                     {
                         case nameof(Dto_Action.UpdateKpi): await _commandsForUpdate.UpdateKpi(update, ct); break;
                         case nameof(Dto_Action.UpdateKpiConfirm): await _commandsForUpdate.UpdateKpiConfirm(update, ct); break;
+                    }
+                    break;
+                case nameof(Dto_Objects.Reg):
+                    switch (callBackDto.Action)
+                    {
+                        case nameof(Dto_Action.RegRequest): await _commandsForRegistration.SendRegRequest(update, ct); break; //получили запрос на доступ
+                        case nameof(Dto_Action.RegApprove): await _commandsForRegistration.ApprovedReg(update, ct); break; //дать доступ
+                        case nameof(Dto_Action.RegReject): await _commandsForRegistration.RejectReg(update, ct); break; //отклонить доступ
                     }
                     break;
             }

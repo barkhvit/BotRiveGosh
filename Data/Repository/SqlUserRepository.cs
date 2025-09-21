@@ -43,5 +43,12 @@ namespace BotRiveGosh.Data.Repository
             var user = await dbContext.users.FirstOrDefaultAsync(u => u.TelegramId == telegramId, token: ct);
             return user != null ? ModelMapper.MapFromModel(user) : null;
         }
+
+        public async Task<bool> UpdateAsync(User user, CancellationToken ct)
+        {
+            using var dbContext = _factory.CreateDataContext();
+            var updated = await dbContext.UpdateAsync(ModelMapper.MapToModel(user), token: ct);
+            return updated > 0;
+        }
     }
 }

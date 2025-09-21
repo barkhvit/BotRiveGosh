@@ -22,5 +22,10 @@ namespace BotRiveGosh.Core.DTOs
         public static string UpdateKpi { get; } = nameof(UpdateKpi);
         public static string UpdateKpiConfirm { get; } = nameof(UpdateKpiConfirm);
 
+        //Registration
+        public static string RegRequest { get; } = nameof(RegRequest);//запрос на доступ
+        public static string RegApprove { get; } = nameof(RegApprove);//разрешить доступ
+        public static string RegReject { get; } = nameof(RegReject);//отклонить доступ
+
     }
 }

@@ -14,5 +14,6 @@ namespace BotRiveGosh.Core.Entities
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public DateTime CreatedAt { get; set; }
+        public bool AccessAllowed { get; set; }
     }
 }

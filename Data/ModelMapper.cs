@@ -110,7 +110,8 @@ namespace BotRiveGosh.Data
                 Username = model.Username,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
-                CreatedAt = model.CreatedAt
+                CreatedAt = model.CreatedAt,
+                AccessAllowed = model.AccessAllowed
             };
         }
 
@@ -123,7 +124,8 @@ namespace BotRiveGosh.Data
                 Username = entity.Username,
                 FirstName = entity.FirstName,
                 LastName = entity.LastName,
-                CreatedAt = entity.CreatedAt
+                CreatedAt = entity.CreatedAt,
+                AccessAllowed = entity.AccessAllowed
             };
         }
     }

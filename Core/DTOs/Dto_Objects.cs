@@ -12,5 +12,6 @@ namespace BotRiveGosh.Core.DTOs
         public static string MainMenu { get; } = nameof(MainMenu);
         public static string AboutBot { get; } = nameof(AboutBot);
         public static string Update { get; } = nameof(Update);
+        public static string Reg { get; } = nameof(Reg);
     }
 }

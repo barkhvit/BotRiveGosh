@@ -13,6 +13,8 @@ using Telegram.Bot;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Microsoft.Extensions.Logging;
+using System.Configuration;
+using BotRiveGosh.BackGroundServices;
 
 namespace BotRiveGosh
 {
@@ -52,8 +54,6 @@ namespace BotRiveGosh
                 Console.WriteLine("Нажмите любую клавишу для выхода...");
                 Console.ReadKey();
             }
-
-            
         }
 
         private static void ConfigureServices(IServiceCollection services)
@@ -68,7 +68,7 @@ namespace BotRiveGosh
             //база данных
             services.AddSingleton<IDataContextFactory<DBContext>>(sp =>
             {
-                string connectionString = "User ID=postgres;Password=Alekseev4+;Host=localhost;Port=5432;Database=rivegosh;Include Error Detail=true";
+                string connectionString = ConfigurationManager.ConnectionStrings["localhost"].ConnectionString;
                 return new DataContextFactory(connectionString);
             });
 
@@ -96,6 +96,7 @@ namespace BotRiveGosh
             services.AddScoped<CommandsForKpi>();
             services.AddScoped<CommandsForMainMenu>();
             services.AddScoped<CommandsForUpdate>();
+            services.AddScoped<CommandsForRegistration>();
 
             //сценарии
             // Регистрируем каждый сценарий отдельно
@@ -113,6 +114,8 @@ namespace BotRiveGosh
             // Фоновый сервис для бота
             services.AddHostedService<BotBackgroundService>();
 
+            // фоновый сервис для нотификаций
+            services.AddHostedService<NotificationBackgroundService>();
         }
     }
 }
