@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BotRiveGosh.Views.Prize;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -15,10 +16,10 @@ namespace BotRiveGosh.Core.DTOs
         public static string Calculate { get; } = nameof(Calculate);
         public static string ShowRules { get; } = nameof(ShowRules);
 
-        //AboutBot
+        //AboutBotView
         public static string AboutBotShow { get; } = nameof(AboutBotShow);
 
-        //Update
+        //UpdatekpiView
         public static string UpdateKpi { get; } = nameof(UpdateKpi);
         public static string UpdateKpiConfirm { get; } = nameof(UpdateKpiConfirm);
 
@@ -26,6 +27,11 @@ namespace BotRiveGosh.Core.DTOs
         public static string RegRequest { get; } = nameof(RegRequest);//запрос на доступ
         public static string RegApprove { get; } = nameof(RegApprove);//разрешить доступ
         public static string RegReject { get; } = nameof(RegReject);//отклонить доступ
+
+        //views
+        public static string Show { get; } = nameof(Show);
+        public static string ShowKpiPrize { get; } = nameof(ShowKpiPrize);
+
 
     }
 }

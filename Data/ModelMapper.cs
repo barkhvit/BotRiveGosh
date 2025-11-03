@@ -11,6 +11,26 @@ namespace BotRiveGosh.Data
 {
     internal static class ModelMapper
     {
+        public static Prizes MapFromModel(PrizesModel model)
+        {
+            return new Prizes
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Description = model.Description,
+                InArchive = model.InArchive
+            };
+        }
+        public static PrizesModel MapToModel(Prizes entity)
+        {
+            return new PrizesModel
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                Description = entity.Description,
+                InArchive = entity.InArchive
+            };
+        }
         public static ShopsModel MapToModel(Shops entity)
         {
             return new ShopsModel
@@ -27,8 +47,7 @@ namespace BotRiveGosh.Data
             };
 
         }
-
-        public static Shops MapToModel(ShopsModel model)
+        public static Shops MapFromModel(ShopsModel model)
         {
             return new Shops
             {

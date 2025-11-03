@@ -1,14 +1,8 @@
 ﻿using BotRiveGosh.Core.DTOs;
-using BotRiveGosh.Handlers.Commands;
 using BotRiveGosh.Helpers;
 using BotRiveGosh.Scenarios;
 using BotRiveGosh.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+using BotRiveGosh.Views.MainMenu;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -20,24 +14,27 @@ namespace BotRiveGosh.Handlers
     //обработка отмены сценириев Cancel
     //проверка пользователя на незаконченный сценарий
     //Запуск сценария - проверка текста на запуск сценария
-    //в зависимости от типа Update - переключаем в нужный обработчик
+    //в зависимости от типа UpdatekpiView - переключаем в нужный обработчик
     public class MainHandler : IUpdateHandler
     {
         private readonly MessageUpdateHandler _messageUpdateHandler;
         private readonly CallBackUpdateHandler _callBackUpdateHandler;
         private readonly DocumentUpdateHandler _documentUpdateHandler;
+        private readonly ITelegramBotClient _botClient;
 
         private readonly IUserService _userService;
-        private readonly CommandsForMainMenu _commandsForMainMenu;
 
         //сценарии
         private readonly IScenarioContextRepository _scenarioContextRepository;
         private readonly IEnumerable<IScenario> _scenarios;
 
+        //views
+        private readonly MainMenuView _mainMenuView;
+
         public MainHandler(MessageUpdateHandler messageUpdateHandler, IUserService userService, 
             IScenarioContextRepository scenarioContextRepository, IEnumerable<IScenario> scenarios, 
-            CommandsForMainMenu commandsForMainMenu, CallBackUpdateHandler callBackUpdateHandler,
-            DocumentUpdateHandler documentUpdateHandler)
+            CallBackUpdateHandler callBackUpdateHandler,DocumentUpdateHandler documentUpdateHandler, 
+            MainMenuView mainMenuView, ITelegramBotClient botClient)
         {
             _messageUpdateHandler = messageUpdateHandler;
             _callBackUpdateHandler = callBackUpdateHandler;
@@ -45,12 +42,16 @@ namespace BotRiveGosh.Handlers
             _userService = userService;
             _scenarioContextRepository = scenarioContextRepository;
             _scenarios = scenarios;
-            _commandsForMainMenu = commandsForMainMenu;
+            _mainMenuView = mainMenuView;
+            _botClient = botClient;
         }
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken ct)
         {
             try
             {
+                //всплывающее меню
+                await SetBotCommandsAsync(ct);
+
                 var (chatId, userId, messageId, Text, user) = MessageInfo.GetMessageInfo(update);
 
                 //проверка доступа
@@ -67,6 +68,7 @@ namespace BotRiveGosh.Handlers
                     await _scenarioContextRepository.ResetContext(userId, ct);
                     await botClient.AnswerCallbackQuery(update.CallbackQuery.Id, cancellationToken: ct);
                     await botClient.EditMessageText(chatId, messageId, "Действие отменено.", cancellationToken: ct);
+                    await _mainMenuView.Show(update, ct, Core.Common.Enums.MessageType.newMessage);
                     //ГЛАВНОЕ МЕНЮ
                     return;
                 }
@@ -76,7 +78,7 @@ namespace BotRiveGosh.Handlers
                 {
                     var newUser = await _userService.GetOrCreateUserAsync(update, ct);
                     Console.WriteLine($"Новый пользователь: {newUser.Username}");
-                    await _commandsForMainMenu.ShowMainMenu(update, ct);
+                    await _mainMenuView.Show(update, ct);
                     return;
                 }
 
@@ -107,7 +109,7 @@ namespace BotRiveGosh.Handlers
                     return;
                 }
 
-                //в зависимости от типа Update переключаем в нужный обработчик
+                //в зависимости от типа UpdatekpiView переключаем в нужный обработчик
                 switch (update.Type)
                 {
                     case Telegram.Bot.Types.Enums.UpdateType.Message:
@@ -192,6 +194,19 @@ namespace BotRiveGosh.Handlers
             }
             return true;
         }
-        
+
+        private async Task SetBotCommandsAsync(CancellationToken ct)
+        {
+            var commands = new List<BotCommand>
+            {
+                new BotCommand { Command = "start", Description = "🏠 Главное меню" },
+                new BotCommand { Command = "kpi", Description = "📊 KPI кассира" }
+            };
+
+            await _botClient.SetMyCommands(
+                commands: commands,
+                cancellationToken: ct
+            );
+        }
     }
 }

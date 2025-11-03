@@ -66,5 +66,28 @@ namespace BotRiveGosh.Helpers
                 _ => defaultValue
             };
         }
+        public static async Task<string> GetUserProfileLinkAsync(long telegramId, ITelegramBotClient botClient, CancellationToken ct)
+        {
+            try
+            {
+                var chat = await botClient.GetChat(telegramId, cancellationToken: ct);
+                string displayName = string.IsNullOrEmpty(chat.FirstName) ? "Разработчик" : $"{chat.FirstName} {chat.LastName}";
+
+                if (!string.IsNullOrEmpty(chat.Username))
+                {
+                    // Если у пользователя есть username
+                    return $"<a href=\"https://t.me/{chat.Username}\">{displayName}</a>";
+                }
+                else
+                {
+                    // Если username нет - используем deep link
+                    return $"<a href=\"tg://user?id={telegramId}\">{displayName}</a>";
+                }
+            }
+            catch
+            {
+                return "Пользователь не найден";
+            }
+        }
     }
 }

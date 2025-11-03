@@ -1,5 +1,4 @@
 ﻿using BotRiveGosh.Core.DTOs;
-using BotRiveGosh.Handlers.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +20,7 @@ namespace BotRiveGosh.Handlers.Keyboards
                 },
                 new List<InlineKeyboardButton>()
                 {
-                    InlineKeyboardButton.WithCallbackData("О боте", new CallBackDto(Dto_Objects.AboutBot, Dto_Action.AboutBotShow).ToString())
+                    InlineKeyboardButton.WithCallbackData("О боте", new CallBackDto(Dto_Objects.AboutBotView, Dto_Action.AboutBotShow).ToString())
                 }
             };
             return new InlineKeyboardMarkup(buttons);

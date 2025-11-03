@@ -33,7 +33,7 @@ namespace BotRiveGosh.Scenarios.Scenario
                 case null:
                     if(update.Type == Telegram.Bot.Types.Enums.UpdateType.CallbackQuery)
                     {
-                        await botClient.AnswerCallbackQuery(update.CallbackQuery.Id, cancellationToken: ct);
+                        if(update.CallbackQuery!=null) await botClient.AnswerCallbackQuery(update.CallbackQuery.Id, cancellationToken: ct);
                         await botClient.EditMessageText(chatId, messageId, "Введите фамилию сотрудника или нажмите ОТМЕНА:", cancellationToken: ct,
                             replyMarkup: InlineKeyboardButton.WithCallbackData("Отмена", "cancel"));
                         context.CurrentStep = "WaitingName";
@@ -46,6 +46,7 @@ namespace BotRiveGosh.Scenarios.Scenario
                             replyMarkup: InlineKeyboardButton.WithCallbackData("Отмена", "cancel"));
                         return ScenarioResult.Transition;
                     }
+
                     var result = await _kpiResultService.GetByNameAsync(Text, ct);
                     if (result.Count > 5)
                     {
@@ -59,7 +60,7 @@ namespace BotRiveGosh.Scenarios.Scenario
                         new()
                         {
                             InlineKeyboardButton.WithCallbackData("Смотреть еще", new CallBackDto(Dto_Objects.Kpi,Dto_Action.ShowResult).ToString()),
-                            InlineKeyboardButton.WithCallbackData("🏠 Главное меню",new CallBackDto(Dto_Objects.MainMenu, Dto_Action.ShowMenuNewMessage).ToString())
+                            InlineKeyboardButton.WithCallbackData("🏠 Главное меню",new CallBackDto(Dto_Objects.MainMenuView, Dto_Action.ShowMenuNewMessage).ToString())
                         }
                     };
 

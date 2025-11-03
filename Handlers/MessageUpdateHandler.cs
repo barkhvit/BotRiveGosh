@@ -1,11 +1,5 @@
-﻿using BotRiveGosh.Handlers.Commands;
-using BotRiveGosh.Helpers;
-using BotRiveGosh.Services.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using BotRiveGosh.Helpers;
+using BotRiveGosh.Views.Kpi;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -14,10 +8,10 @@ namespace BotRiveGosh.Handlers
 {
     public class MessageUpdateHandler : IUpdateHandler
     {
-        private readonly CommandsForKpi _commandsForKpi;
-        public MessageUpdateHandler(CommandsForKpi commandsForKpi)
+        private readonly MenuKpiView _menuKpiView;
+        public MessageUpdateHandler(MenuKpiView menuKpiView)
         {
-            _commandsForKpi = commandsForKpi;
+            _menuKpiView = menuKpiView;
         }
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken ct)
         {
@@ -27,7 +21,7 @@ namespace BotRiveGosh.Handlers
             {
                 switch (Text)
                 {
-                    case "/kpi": await _commandsForKpi.ShowMenuKpi(update, ct); break;
+                    case "/kpi": await _menuKpiView.Show(update, ct); break;
                 }
             }
             catch(Exception ex)

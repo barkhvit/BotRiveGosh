@@ -2,19 +2,18 @@
 using BotRiveGosh.Data.Repository;
 using BotRiveGosh.Data.Repository.Interfaces;
 using BotRiveGosh.Handlers;
-using BotRiveGosh.Handlers.Commands;
 using BotRiveGosh.Scenarios;
 using BotRiveGosh.Scenarios.Scenario;
 using BotRiveGosh.Services;
 using BotRiveGosh.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
 using Telegram.Bot;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Hosting.WindowsServices;
 using Microsoft.Extensions.Logging;
 using System.Configuration;
 using BotRiveGosh.BackGroundServices;
+using BotRiveGosh.Views;
+using System.Reflection;
 
 namespace BotRiveGosh
 {
@@ -27,7 +26,7 @@ namespace BotRiveGosh
                 IHost host = Host.CreateDefaultBuilder(args)
                 .UseWindowsService(options =>
                 {
-                    options.ServiceName = "BotRiveGoshService";
+                    options.ServiceName = "RiveGoshService";
                 })
                 .ConfigureServices(ConfigureServices)
                 .ConfigureLogging(logging =>
@@ -36,7 +35,7 @@ namespace BotRiveGosh
                     logging.AddDebug();
                     logging.AddEventLog(settings =>
                     {
-                        settings.SourceName = "BotRiveGoshService";
+                        settings.SourceName = "RiveGoshService";
                     });
                 })
                 .Build();
@@ -84,6 +83,7 @@ namespace BotRiveGosh
             services.AddScoped<IScenarioContextRepository, InMemoryScenarioContextRepository>();
             services.AddScoped<InMemoryRepository>();
             services.AddScoped<IKpiRepository, SqlKpiRepository>();
+            services.AddScoped<IPrizesRepository, SqlPrizesRepository>();
 
             //сервисы
             services.AddScoped<IUserService, UserService>();
@@ -91,12 +91,18 @@ namespace BotRiveGosh
             services.AddScoped<InMemoryStorageService>();
             services.AddScoped<IKpiService, KpiService>();
             services.AddScoped<InputFileService>();
+            services.AddScoped<IPrizesService, PrizesService>();
 
-            //команды
-            services.AddScoped<CommandsForKpi>();
-            services.AddScoped<CommandsForMainMenu>();
-            services.AddScoped<CommandsForUpdate>();
-            services.AddScoped<CommandsForRegistration>();
+            //Views
+            // Автоматически регистрируем все классы, наследующие от BaseView
+            var viewTypes = Assembly.GetExecutingAssembly()
+                .GetTypes()
+                .Where(t => t.IsClass && !t.IsAbstract && t.IsSubclassOf(typeof(BaseView)));
+
+            foreach (var viewType in viewTypes)
+            {
+                services.AddScoped(viewType);
+            }
 
             //сценарии
             // Регистрируем каждый сценарий отдельно

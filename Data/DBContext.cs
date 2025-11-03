@@ -15,6 +15,7 @@ namespace BotRiveGosh.Data
         public DBContext(string connectionString) : base(ProviderName.PostgreSQL, connectionString) { }
         public ITable<UserModel> users => this.GetTable<UserModel>();
         public ITable<KpiModel> kpis => this.GetTable<KpiModel>();
+        public ITable<PrizesModel> prizes => this.GetTable<PrizesModel>();
 
         // Метод для вызова функции
         public IEnumerable<KpiResultModel> GetKpi(string searchName)

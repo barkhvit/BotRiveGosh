@@ -1,7 +1,10 @@
 ﻿using BotRiveGosh.Core.Common.Enums;
 using BotRiveGosh.Core.DTOs;
-using BotRiveGosh.Handlers.Commands;
 using BotRiveGosh.Helpers;
+using BotRiveGosh.Views.Kpi;
+using BotRiveGosh.Views.MainMenu;
+using BotRiveGosh.Views.NewUser;
+using BotRiveGosh.Views.Prize;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,17 +18,25 @@ namespace BotRiveGosh.Handlers
 {
     public class CallBackUpdateHandler : IUpdateHandler
     {
-        private readonly CommandsForKpi _commandsForKpi;
-        private readonly CommandsForMainMenu _commandsForMainMenu;
-        private readonly CommandsForUpdate _commandsForUpdate;
-        private readonly CommandsForRegistration _commandsForRegistration;
-        public CallBackUpdateHandler(CommandsForKpi commandsForKpi, CommandsForMainMenu commandsForMainMenu,
-            CommandsForUpdate commandsForUpdate, CommandsForRegistration commandsForRegistration)
+        private readonly MainMenuView _mainMenuView;
+        private readonly AboutBotView _aboutBotView;
+        private readonly MenuKpiView _menuKpiView;
+        private readonly GiveRequestView _giveRequestView;
+        private readonly UpdatekpiView _updatekpiView;
+        private readonly AllPrizesView _allPrizesView;
+        private readonly DetailPrizeView _detailPrizeView;
+        public CallBackUpdateHandler(MainMenuView mainMenuView,
+            AboutBotView aboutBotView, MenuKpiView menuKpiView, 
+            GiveRequestView giveRequestView, UpdatekpiView updatekpiView,
+            AllPrizesView allPrizesView, DetailPrizeView detailPrizeView)
         {
-            _commandsForKpi = commandsForKpi;
-            _commandsForMainMenu = commandsForMainMenu;
-            _commandsForUpdate = commandsForUpdate;
-            _commandsForRegistration = commandsForRegistration;
+            _mainMenuView = mainMenuView;
+            _aboutBotView = aboutBotView;
+            _menuKpiView = menuKpiView;
+            _giveRequestView = giveRequestView;
+            _updatekpiView = updatekpiView;
+            _allPrizesView = allPrizesView;
+            _detailPrizeView = detailPrizeView;
         }
 
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken ct)
@@ -34,38 +45,60 @@ namespace BotRiveGosh.Handlers
             CallBackDto callBackDto = CallBackDto.FromString(Text);
             switch (callBackDto.Object)
             {
-                case nameof(Dto_Objects.MainMenu):
+                case nameof(Dto_Objects.MainMenuView):
                     switch (callBackDto.Action)
                     {
-                        case nameof(Dto_Action.ShowMenu): await _commandsForMainMenu.ShowMainMenu(update, ct); break;
-                        case nameof(Dto_Action.ShowMenuNewMessage): await _commandsForMainMenu.ShowMainMenu(update, ct, MessageType.newMessage); break;
+                        case nameof(Dto_Action.ShowMenu): await _mainMenuView.Show(update, ct); break;
+                        case nameof(Dto_Action.ShowMenuNewMessage): await _mainMenuView.Show(update, ct, MessageType.newMessage); break;
+                        case nameof(Dto_Action.Show): await _mainMenuView.Show(update, ct); break;
                     }
                     break;
+
+                case nameof(Dto_Objects.MenuKpiView):
+                    switch (callBackDto.Action)
+                    {
+                        case nameof(Dto_Action.Show): await _menuKpiView.Show(update, ct); break;
+                    }break;
+
+                case nameof(Dto_Objects.DetailPrizeView):
+                    switch (callBackDto.Action)
+                    {
+                        case nameof(Dto_Action.Show): await _detailPrizeView.Show(update, ct); break;
+                        case nameof(Dto_Action.ShowKpiPrize): await _detailPrizeView.ShowKpiPrize(update, ct); break;
+                    }
+                    break;
+
+                case nameof(Dto_Objects.AllPrizesView):
+                    switch (callBackDto.Action)
+                    {
+                        case nameof(Dto_Action.Show): await _allPrizesView.Show(update, ct); break;
+                    }break;
+
                 case nameof(Dto_Objects.Kpi):
                     switch (callBackDto.Action)
                     {
-                        case nameof(Dto_Action.ShowMenu): await _commandsForKpi.ShowMenuKpi(update, ct); break;
+                        case nameof(Dto_Action.ShowMenu): await _menuKpiView.Show(update, ct); break;
                     }
                     break;
-                case nameof(Dto_Objects.AboutBot):
+                case nameof(Dto_Objects.AboutBotView):
                     switch (callBackDto.Action) 
                     {
-                        case nameof(Dto_Action.AboutBotShow): await _commandsForMainMenu.ShowAboutBot(update, ct); break;
+                        case nameof(Dto_Action.AboutBotShow): await _aboutBotView.Show(update, ct); break;
                     }
                     break;
-                case nameof(Dto_Objects.Update):
+                case nameof(Dto_Objects.UpdatekpiView):
                     switch (callBackDto.Action)
                     {
-                        case nameof(Dto_Action.UpdateKpi): await _commandsForUpdate.UpdateKpi(update, ct); break;
-                        case nameof(Dto_Action.UpdateKpiConfirm): await _commandsForUpdate.UpdateKpiConfirm(update, ct); break;
+                        case nameof(Dto_Action.UpdateKpi): await _updatekpiView.Show(update, ct); break;
+                        case nameof(Dto_Action.UpdateKpiConfirm): await _updatekpiView.UpdateKpiConfirm(update, ct); break;
                     }
                     break;
                 case nameof(Dto_Objects.Reg):
                     switch (callBackDto.Action)
                     {
-                        case nameof(Dto_Action.RegRequest): await _commandsForRegistration.SendRegRequest(update, ct); break; //получили запрос на доступ
-                        case nameof(Dto_Action.RegApprove): await _commandsForRegistration.ApprovedReg(update, ct); break; //дать доступ
-                        case nameof(Dto_Action.RegReject): await _commandsForRegistration.RejectReg(update, ct); break; //отклонить доступ
+                        case nameof(Dto_Action.RegRequest): await _giveRequestView.Show(update, ct); break; //получили запрос на доступ
+                        case nameof(Dto_Action.RegApprove): await _giveRequestView.GiveRequest(update, ct); break; //дать доступ
+                        case nameof(Dto_Action.RegReject): await _giveRequestView.RejectReg(update, ct); break; //отклонить доступ
                     }
                     break;
             }
@@ -75,7 +108,5 @@ namespace BotRiveGosh.Handlers
         {
             throw new NotImplementedException();
         }
-
-        
     }
 }
