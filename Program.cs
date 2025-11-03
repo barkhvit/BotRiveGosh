@@ -60,7 +60,7 @@ namespace BotRiveGosh
             // Регистрируем бота
             services.AddSingleton<ITelegramBotClient>(sp =>
             {
-                string token = Environment.GetEnvironmentVariable("Bot_RiveGosh", EnvironmentVariableTarget.User);
+                string token = Environment.GetEnvironmentVariable("Bot_RiveGosh", EnvironmentVariableTarget.Machine);
                 return new TelegramBotClient(token);
             });
 
