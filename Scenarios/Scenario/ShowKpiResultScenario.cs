@@ -69,8 +69,9 @@ namespace BotRiveGosh.Scenarios.Scenario
                     var countOfMonth = result.Select(r => r.Month).Distinct().ToList();
                     if(countOfMonth.Count > 1)
                     {
+                        //делаем кнопочки
                         List<List<InlineKeyboardButton>> monthButtons = new();
-                        monthButtons.Add(result.Select(r => InlineKeyboardButton.WithCallbackData($"{r.Month}", $"{r.Month}")).ToList());
+                        monthButtons.Add(countOfMonth.Select(r => InlineKeyboardButton.WithCallbackData($"{r}", $"{r}")).ToList());
                         monthButtons.Add(new List<InlineKeyboardButton> { InlineKeyboardButton.WithCallbackData("Отмена", "cancel") });
 
                         await botClient.SendMessage(chatId, "Выберите месяц:", cancellationToken: ct, 
