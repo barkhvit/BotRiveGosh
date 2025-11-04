@@ -66,10 +66,9 @@ namespace BotRiveGosh.Handlers
                 if (Text == "/cancel" || Text == "cancel")
                 {
                     await _scenarioContextRepository.ResetContext(userId, ct);
-                    await botClient.AnswerCallbackQuery(update.CallbackQuery.Id, cancellationToken: ct);
-                    await botClient.EditMessageText(chatId, messageId, "Действие отменено.", cancellationToken: ct);
-                    await _mainMenuView.Show(update, ct, Core.Common.Enums.MessageType.newMessage);
+                    if(update.CallbackQuery != null) await botClient.AnswerCallbackQuery(update.CallbackQuery.Id, cancellationToken: ct);
                     //ГЛАВНОЕ МЕНЮ
+                    await _mainMenuView.Show(update, ct);
                     return;
                 }
 
@@ -94,8 +93,8 @@ namespace BotRiveGosh.Handlers
                 if (Text != null)
                 {
                     CallBackDto callBackDto = CallBackDto.FromString(Text);
-                    //Сценарий: Показать результат KPI
-                    if (callBackDto.Object == Dto_Objects.Kpi && callBackDto.Action == Dto_Action.ShowResult)
+                    //Сценарий: показать результат kpi
+                    if (callBackDto.Object == Dto_Objects.Kpi && callBackDto.Action == Dto_Action.ShowResultScenario)
                     {
                         await SetNewContext(update, ScenarioType.ShowKpiResult, botClient, ct);
                         return;

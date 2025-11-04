@@ -26,7 +26,7 @@ namespace BotRiveGosh.Views.Kpi
             List<InlineKeyboardButton[]> buttons = new();
             List<InlineKeyboardButton> row = new()
             {
-                InlineKeyboardButton.WithCallbackData("Посмотреть результат",new CallBackDto(Dto_Objects.Kpi, Dto_Action.ShowResult).ToString()), //сценарий показать результат KPI
+                InlineKeyboardButton.WithCallbackData("Посмотреть результат",new CallBackDto(Dto_Objects.Kpi, Dto_Action.ShowResultScenario).ToString()), //сценарий показать результат KPI
                 InlineKeyboardButton.WithCallbackData("Обновить",new CallBackDto(Dto_Objects.UpdatekpiView, Dto_Action.UpdateKpi).ToString()),
             };
             List<InlineKeyboardButton> row2 = new()

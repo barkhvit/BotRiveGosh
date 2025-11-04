@@ -12,7 +12,7 @@ namespace BotRiveGosh.Core.DTOs
     {
         public static string ShowMenu { get; } = nameof(ShowMenu);
         public static string ShowMenuNewMessage { get; } = nameof(ShowMenuNewMessage);
-        public static string ShowResult { get; } = nameof(ShowResult);
+        public static string ShowResultScenario { get; } = nameof(ShowResultScenario);
         public static string Calculate { get; } = nameof(Calculate);
         public static string ShowRules { get; } = nameof(ShowRules);
 

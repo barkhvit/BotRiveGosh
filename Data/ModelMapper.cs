@@ -100,6 +100,7 @@ namespace BotRiveGosh.Data
         {
             return new KpiResult
             {
+                Month = model.Month,
                 Shop = model.Shop,
                 Category = model.Category,
                 Name = model.Name,
@@ -112,6 +113,7 @@ namespace BotRiveGosh.Data
         {
             return new KpiResultModel
             {
+                Month = entity.Month,
                 Shop = entity.Shop,
                 Category = entity.Category,
                 Name = entity.Name,
