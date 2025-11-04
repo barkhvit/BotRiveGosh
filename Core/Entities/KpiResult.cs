@@ -8,6 +8,7 @@ namespace BotRiveGosh.Core.Entities
 {
     public class KpiResult
     {
+        public string Month { get; set; } = "";
         public string Shop { get; set; } = "";
         public string Category { get; set; } = "";
         public string Name { get; set; } = "";

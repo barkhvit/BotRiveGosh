@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
 
 namespace BotRiveGosh.Data.Repository
 {
@@ -17,6 +18,7 @@ namespace BotRiveGosh.Data.Repository
         {
             _factory = factory;
         }
+
         public async Task<bool> UpdateAsync(List<Kpi> kpis, CancellationToken ct)
         {
             using var dbContext = _factory.CreateDataContext();
@@ -37,10 +39,6 @@ namespace BotRiveGosh.Data.Repository
 
                     await dbContext.BulkCopyAsync(options, kpis.Select(k => ModelMapper.MapToModel(k)), ct);
                 }
-                //foreach(var kpi in kpis)
-                //{
-                //    await dbContext.InsertAsync(ModelMapper.MapToModel(kpi), token:ct);
-                //}
 
                 //коммитим транзакцию
                 await transaction.CommitAsync(ct);

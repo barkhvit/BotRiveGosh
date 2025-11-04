@@ -153,3 +153,46 @@ CREATE TABLE shops (
 --    IS 'Возвращает KPI показатели по фильтру имени за указанный месяц';
 
 
+--CREATE OR REPLACE FUNCTION public.get_kpi_withmonth(
+--	p_name_pattern text)
+--    RETURNS TABLE(month text, shop text, category text, name text, total_checks bigint, sp_checks bigint, result numeric) 
+--    LANGUAGE 'plpgsql'
+--    COST 100
+--    VOLATILE PARALLEL UNSAFE
+--    ROWS 1000
+
+--AS $BODY$
+--BEGIN
+--    RETURN QUERY
+--    SELECT 
+--        TO_CHAR(k.date, 'MonthYYYY')::TEXT AS month,
+--        s.nameqv::TEXT AS shop,
+--        s.category::TEXT as category,
+--        k.name::TEXT AS name,
+--        SUM(k.checks)::BIGINT AS total_checks,
+--        SUM(k.specialchecks)::BIGINT AS sp_checks,
+--        ROUND(
+--            CASE 
+--                WHEN SUM(k.specialchecks) = 0 THEN 0
+--                ELSE SUM(k.checks)::DECIMAL / NULLIF(SUM(k.specialchecks), 0)
+--            END, 
+--            2
+--        ) AS result
+--    FROM 
+--        kpi k
+--    INNER JOIN 
+--        shops s ON k.shopid = s.id
+--    WHERE 
+--        LOWER(k.name) LIKE LOWER('%' || p_name_pattern || '%')
+--    GROUP BY 
+--        TO_CHAR(k.date, 'MonthYYYY'),  -- Должно совпадать с SELECT
+--        s.nameqv, 
+--        s.category,
+--        k.name
+--    ORDER BY 
+--        MIN(k.date) DESC,  -- Для правильной сортировки по дате
+--        s.nameqv, 
+--        k.name;
+--END;
+--$BODY$;
+

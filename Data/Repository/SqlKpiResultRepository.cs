@@ -18,9 +18,17 @@ namespace BotRiveGosh.Data.Repository
         public Task<IReadOnlyList<KpiResult>> GetByNameAsync(string name, CancellationToken ct)
         {
             using var dbContext = _factory.CreateDataContext();
-            var models = dbContext.GetKpi(name, DateOnly.FromDateTime(DateTime.UtcNow)).ToList();
+            var models = dbContext.GetKpiWithMonth(name).ToList();
             var result = models.Select(ModelMapper.MapFromModel).ToList();
             return Task.FromResult<IReadOnlyList<KpiResult>>(result);
         }
+
+        public Task<DateOnly?> GetLastDateUpdate(CancellationToken ct)
+        {
+            using var dbContext = _factory.CreateDataContext();
+            var lastDateUpdate = dbContext.GetLastUpdateKpi();
+            return Task.FromResult<DateOnly?>(lastDateUpdate);
+        }
+
     }
 }

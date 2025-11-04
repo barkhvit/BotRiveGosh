@@ -19,9 +19,16 @@ namespace BotRiveGosh.Services
         {
             _kpiResultRepository = kpiResultRepository;
         }
+
+
         public async Task<IReadOnlyList<KpiResult>> GetByNameAsync(string name, CancellationToken ct)
         {
             return await _kpiResultRepository.GetByNameAsync(name, ct);
+        }
+
+        public async Task<DateOnly?> GetLastDateUpdate(CancellationToken ct)
+        {
+            return await _kpiResultRepository.GetLastDateUpdate(ct);
         }
     }
 }

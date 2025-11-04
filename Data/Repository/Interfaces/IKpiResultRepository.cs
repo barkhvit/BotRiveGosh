@@ -10,5 +10,6 @@ namespace BotRiveGosh.Data.Repository.Interfaces
     public interface IKpiResultRepository
     {
         Task<IReadOnlyList<KpiResult>> GetByNameAsync(string name, CancellationToken ct);
+        Task<DateOnly?> GetLastDateUpdate(CancellationToken ct);
     }
 }
