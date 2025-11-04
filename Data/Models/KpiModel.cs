@@ -1,7 +1,6 @@
 ﻿using LinqToDB.Mapping;
 using System;
 using System.Collections.Generic;
-using LinqToDB.Mapping;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,8 +14,8 @@ namespace BotRiveGosh.Data.Models
         [PrimaryKey][Column("id")]public long Id { get; set; }
         [Column("shopid")] public int ShopId { get; set; }
         [Column("date")] public DateTime Date { get; set; }
-        [Column("position")] public string Position { get; set; }
-        [Column("name")] public string Name { get; set; }
+        [Column("position")] public string Position { get; set; } = "";
+        [Column("name")] public string Name { get; set; } = "";
         [Column("localid")] public string? LocalId { get; set; }
         [Column("tnumber")] public string? TNumber { get; set; }
         [Column("cardtype")] public string? CardType { get; set; }
