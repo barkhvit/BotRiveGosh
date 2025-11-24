@@ -5,6 +5,7 @@ using BotRiveGosh.Views.Kpi;
 using BotRiveGosh.Views.MainMenu;
 using BotRiveGosh.Views.NewUser;
 using BotRiveGosh.Views.Prize;
+using BotRiveGosh.Views.ToDo;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,11 +25,21 @@ namespace BotRiveGosh.Handlers
         private readonly GiveRequestView _giveRequestView;
         private readonly UpdatekpiView _updatekpiView;
         private readonly AllPrizesView _allPrizesView;
-        private readonly DetailPrizeView _detailPrizeView;
+        private readonly AboutPrizeView _detailPrizeView;
+        private readonly PrizeMenuView _prizeMenuView;
+        private readonly TodoMenuView _todoMenuView;
+        private readonly TodoListView _todoListView;
+        private readonly TodoEditView _todoEditView;
+        private readonly TodoDetailView _todoDetailView;
+        private readonly TodoDoneView _todoDoneView;
+
         public CallBackUpdateHandler(MainMenuView mainMenuView,
             AboutBotView aboutBotView, MenuKpiView menuKpiView, 
             GiveRequestView giveRequestView, UpdatekpiView updatekpiView,
-            AllPrizesView allPrizesView, DetailPrizeView detailPrizeView)
+            AllPrizesView allPrizesView, AboutPrizeView detailPrizeView,
+            PrizeMenuView prizeMenuView, TodoMenuView todoMenuView,
+            TodoListView todoListView, TodoEditView todoEditView,
+            TodoDetailView todoDetailView, TodoDoneView todoDoneView)
         {
             _mainMenuView = mainMenuView;
             _aboutBotView = aboutBotView;
@@ -37,6 +48,12 @@ namespace BotRiveGosh.Handlers
             _updatekpiView = updatekpiView;
             _allPrizesView = allPrizesView;
             _detailPrizeView = detailPrizeView;
+            _prizeMenuView = prizeMenuView;
+            _todoMenuView = todoMenuView;
+            _todoListView = todoListView;
+            _todoEditView = todoEditView;
+            _todoDetailView = todoDetailView;
+            _todoDoneView = todoDoneView;
         }
 
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken ct)
@@ -54,17 +71,17 @@ namespace BotRiveGosh.Handlers
                     }
                     break;
 
-                case nameof(Dto_Objects.MenuKpiView):
+                case nameof(Dto_Objects.PrizeMenuView):
                     switch (callBackDto.Action)
                     {
-                        case nameof(Dto_Action.Show): await _menuKpiView.Show(update, ct); break;
-                    }break;
+                        case nameof(Dto_Action.Show): await _prizeMenuView.Show(update, ct); break;
+                    }
+                    break;
 
                 case nameof(Dto_Objects.DetailPrizeView):
                     switch (callBackDto.Action)
                     {
                         case nameof(Dto_Action.Show): await _detailPrizeView.Show(update, ct); break;
-                        case nameof(Dto_Action.ShowKpiPrize): await _detailPrizeView.ShowKpiPrize(update, ct); break;
                     }
                     break;
 
@@ -101,6 +118,22 @@ namespace BotRiveGosh.Handlers
                         case nameof(Dto_Action.RegReject): await _giveRequestView.RejectReg(update, ct); break; //отклонить доступ
                     }
                     break;
+
+                //TODO -----------------------------------------------------
+                //menu
+                case nameof(Dto_Objects.TodoMenuView):await _todoMenuView.Show(update, ct); break;
+
+                //список задач
+                case nameof(Dto_Objects.TodoListView): await _todoListView.Show(update, ct); break;
+
+                //редактировать - выводится список задач в виде кнопок
+                case nameof(Dto_Objects.TodoEditView):await _todoEditView.Show(update, ct); break;
+
+                //детальный показ - выводит детально задачу с кнопками редактировать, завершить
+                case nameof(Dto_Objects.TodoDetailView): await _todoDetailView.Show(update, ct); break;
+
+                //вы действительно хотите сделать задачу завершенной
+                case nameof(Dto_Objects.TodoDoneView): await _todoDoneView.Show(update, ct); break;
             }
         }
 

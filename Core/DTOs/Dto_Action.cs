@@ -12,7 +12,6 @@ namespace BotRiveGosh.Core.DTOs
     {
         public static string ShowMenu { get; } = nameof(ShowMenu);
         public static string ShowMenuNewMessage { get; } = nameof(ShowMenuNewMessage);
-        public static string ShowResultScenario { get; } = nameof(ShowResultScenario);
         public static string Calculate { get; } = nameof(Calculate);
         public static string ShowRules { get; } = nameof(ShowRules);
 
@@ -33,5 +32,13 @@ namespace BotRiveGosh.Core.DTOs
         public static string ShowKpiPrize { get; } = nameof(ShowKpiPrize);
 
 
+        //TodoListView и TodoEditView
+        public static string ShowToday { get; } = nameof(ShowToday);
+        public static string ShowOverdue { get; } = nameof(ShowOverdue);
+        public static string TodoDone { get; internal set; } = nameof(TodoDone);
+
+        //сценарии
+        public static string AddTodoScenario { get; } = nameof(AddTodoScenario); //создать новую задачу
+        public static string ShowResultScenario { get; } = nameof(ShowResultScenario); //показать результат kpi
     }
 }

@@ -60,8 +60,8 @@ namespace BotRiveGosh
             // Регистрируем бота
             services.AddSingleton<ITelegramBotClient>(sp =>
             {
-                //string token = Environment.GetEnvironmentVariable("Bot_RiveGosh", EnvironmentVariableTarget.Machine);
-                string token = Environment.GetEnvironmentVariable("BotForTesting", EnvironmentVariableTarget.Machine);
+                string token = Environment.GetEnvironmentVariable("Bot_RiveGosh", EnvironmentVariableTarget.Machine);
+                //string token = Environment.GetEnvironmentVariable("BotForTesting", EnvironmentVariableTarget.Machine);
                 return new TelegramBotClient(token);
             });
 
@@ -85,6 +85,7 @@ namespace BotRiveGosh
             services.AddScoped<InMemoryRepository>();
             services.AddScoped<IKpiRepository, SqlKpiRepository>();
             services.AddScoped<IPrizesRepository, SqlPrizesRepository>();
+            services.AddScoped<ITodoRepository, SqlTodoRepository>();
 
             //сервисы
             services.AddScoped<IUserService, UserService>();
@@ -93,6 +94,7 @@ namespace BotRiveGosh
             services.AddScoped<IKpiService, KpiService>();
             services.AddScoped<InputFileService>();
             services.AddScoped<IPrizesService, PrizesService>();
+            services.AddScoped<ITodoService, TodoService>();
 
             //Views
             // Автоматически регистрируем все классы, наследующие от BaseView
@@ -108,13 +110,17 @@ namespace BotRiveGosh
             //сценарии
             // Регистрируем каждый сценарий отдельно
             services.AddScoped<IScenario, ShowKpiResultScenario>();
+            services.AddScoped<IScenario, AddTodoScenario>();
 
             services.AddSingleton<IEnumerable<IScenario>>(sp =>
             {
                 var kpiResultService = sp.GetRequiredService<IKpiResultService>();
+                var todoService = sp.GetRequiredService<ITodoService>();
+                var userService = sp.GetRequiredService<IUserService>();
                 return new List<IScenario>
                 {
-                    new ShowKpiResultScenario(kpiResultService)
+                    new ShowKpiResultScenario(kpiResultService),
+                    new AddTodoScenario(todoService, userService)
                 };
             });
 

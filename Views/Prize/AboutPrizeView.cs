@@ -12,15 +12,16 @@ using Telegram.Bot.Types.ReplyMarkups;
 
 namespace BotRiveGosh.Views.Prize
 {
-    public class DetailPrizeView : BaseView
+    public class AboutPrizeView : BaseView
     {
         private readonly IPrizesService _prizesService;
-        public DetailPrizeView(ITelegramBotClient botClient, IPrizesService prizesService) : base(botClient)
+        public AboutPrizeView(ITelegramBotClient botClient, IPrizesService prizesService) : base(botClient)
         {
             _prizesService = prizesService;
         }
 
-        public override async Task Show(Update update, CancellationToken ct, MessageType messageType = MessageType.defaultMessage)
+        public override async Task Show(Update update, CancellationToken ct, 
+            MessageType messageType = MessageType.defaultMessage, string inputDto = "")
         {
             InitializeMessageInfo(update);
 
@@ -39,31 +40,17 @@ namespace BotRiveGosh.Views.Prize
                     //правим сообщение
                     if (update.CallbackQuery != null && prize != null)
                     {
+                        //кнопка назад
+                        var backButton = InlineKeyboardButton.WithCallbackData("⬅️ назад", new CallBackDto(Dto_Objects.PrizeMenuView, Dto_Action.Show, _id: prize.Id).ToString());
+                        
                         await _botClient.AnswerCallbackQuery(update.CallbackQuery.Id, cancellationToken: ct);
                         await _botClient.EditMessageText(ChatId, MessageId, $"{prize?.Description}",
                             cancellationToken: ct,
-                            replyMarkup: new InlineKeyboardMarkup(InlineKeyboardButton
-                                .WithCallbackData("⬅️ Назад", new CallBackDto(Dto_Objects.AllPrizesView, Dto_Action.Show).ToString())));
+                            replyMarkup: new InlineKeyboardMarkup(backButton));
                     }
                 }
             }
         }
 
-        public async Task ShowKpiPrize(Update update, CancellationToken ct)
-        {
-            InitializeMessageInfo(update);
-
-            var prize = await _prizesService.GetByNameAsync("kpi кассира", ct);
-
-            //правим сообщение
-            if (update.CallbackQuery != null && prize != null)
-            {
-                await _botClient.AnswerCallbackQuery(update.CallbackQuery.Id, cancellationToken: ct);
-                await _botClient.EditMessageText(ChatId, MessageId, $"{prize?.Description}",
-                    cancellationToken: ct,
-                    replyMarkup: new InlineKeyboardMarkup(InlineKeyboardButton
-                        .WithCallbackData("⬅️ назад", new CallBackDto(Dto_Objects.MenuKpiView, Dto_Action.Show).ToString())));
-            }
-        }
     }
 }

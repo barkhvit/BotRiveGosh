@@ -24,6 +24,6 @@ namespace BotRiveGosh.Data.Models
 
 
         [Association(ThisKey = nameof(ShopId), OtherKey = nameof(ShopsModel.Id))]
-        public ShopsModel Shops { get; set; }
+        public ShopsModel Shops { get; set; } = null!;
     }
 }

@@ -99,6 +99,13 @@ namespace BotRiveGosh.Handlers
                         await SetNewContext(update, ScenarioType.ShowKpiResult, botClient, ct);
                         return;
                     }
+
+                    //Сценарий: создать новую задачу
+                    if(callBackDto.Object == Dto_Objects.Todo && callBackDto.Action == Dto_Action.AddTodoScenario)
+                    {
+                        await SetNewContext(update, ScenarioType.AddTodo, botClient, ct);
+                        return;
+                    }
                 }
 
                 //проверяем на наличие документа

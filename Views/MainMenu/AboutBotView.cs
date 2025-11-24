@@ -20,7 +20,8 @@ namespace BotRiveGosh.Views.MainMenu
         {
         }
 
-        public override async Task Show(Update update, CancellationToken ct, MessageType messageType = MessageType.defaultMessage)
+        public override async Task Show(Update update, CancellationToken ct, 
+            MessageType messageType = MessageType.defaultMessage, string inputDto = "")
         {
             InitializeMessageInfo(update);
             string sourceId = await Helpers.MessageInfo.GetUserProfileLinkAsync(1976535977, _botClient, ct);

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BotRiveGosh.Scenarios
+namespace BotRiveGosh.Views.ToDo
 {
-    public enum ScenarioType
+    internal enum TypeOfTodoList
     {
-        None, ShowKpiResult, AddTodo
+        todoAll, todoOverdue, todoToday
     }
 }

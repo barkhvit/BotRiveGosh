@@ -21,7 +21,8 @@ namespace BotRiveGosh.Views.Kpi
             _kpiService = kpiService;
         }
 
-        public override async Task Show(Update update, CancellationToken ct, MessageType messageType = MessageType.defaultMessage)
+        public override async Task Show(Update update, CancellationToken ct, 
+            MessageType messageType = MessageType.defaultMessage, string inputDto = "")
         {
             InitializeMessageInfo(update);
 

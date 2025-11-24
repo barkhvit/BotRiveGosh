@@ -43,7 +43,9 @@ namespace BotRiveGosh.Views
             (ChatId, UserId, MessageId, Text, User) = GetMessageInfo(update);
         }
 
-        public abstract Task Show(Update update, CancellationToken ct, BotRiveGosh.Core.Common.Enums.MessageType messageType = Core.Common.Enums.MessageType.defaultMessage);
+        public abstract Task Show(Update update, CancellationToken ct, 
+            BotRiveGosh.Core.Common.Enums.MessageType messageType = Core.Common.Enums.MessageType.defaultMessage, 
+            string inputDto = "");
     }
 }
 

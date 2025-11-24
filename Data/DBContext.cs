@@ -17,6 +17,7 @@ namespace BotRiveGosh.Data
         public ITable<UserModel> users => this.GetTable<UserModel>();
         public ITable<KpiModel> kpis => this.GetTable<KpiModel>();
         public ITable<PrizesModel> prizes => this.GetTable<PrizesModel>();
+        public ITable<TodoModel> todos => this.GetTable<TodoModel>();
 
         // Метод для вызова функции
         public IEnumerable<KpiResultModel> GetKpi(string searchName)

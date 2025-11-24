@@ -11,6 +11,32 @@ namespace BotRiveGosh.Data
 {
     internal static class ModelMapper
     {
+        public static Todo MapFromModel(TodoModel model)
+        {
+            return new Todo()
+            {
+                Id = model.Id,
+                Name = model.Name,
+                Description = model.Description,
+                CreatedAt = model.CreatedAt,
+                FinishedAt = model.FinishedAt,
+                User = ModelMapper.MapFromModel(model.User),
+                IsCompleted = model.IsCompleted
+            };
+        }
+        public static TodoModel MapToModel(Todo entity)
+        {
+            return new TodoModel()
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                Description = entity.Description,
+                CreatedAt = entity.CreatedAt,
+                FinishedAt = entity.FinishedAt,
+                UserId = entity.User.Id,
+                IsCompleted = entity.IsCompleted
+            };
+        }
         public static Prizes MapFromModel(PrizesModel model)
         {
             return new Prizes

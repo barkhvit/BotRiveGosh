@@ -19,7 +19,8 @@ namespace BotRiveGosh.Views.MainMenu
         //Dto_Objects.MainMenuView Dto_Action.ShowMenuNewMessage
         public MainMenuView(ITelegramBotClient botClient) : base(botClient) { }
 
-        public override async Task Show(Update update, CancellationToken ct, MessageType messageType = MessageType.defaultMessage)
+        public override async Task Show(Update update, CancellationToken ct, 
+            MessageType messageType = MessageType.defaultMessage, string inputDto = "")
         {
             //получаем ChatId, UserId, MessageId, Text, User
             InitializeMessageInfo(update);
@@ -46,8 +47,11 @@ namespace BotRiveGosh.Views.MainMenu
             {
                 new List<InlineKeyboardButton>()
                 {
-                    InlineKeyboardButton.WithCallbackData("📊 KPI кассира",new CallBackDto(Dto_Objects.Kpi, Dto_Action.ShowMenu).ToString()),
                     InlineKeyboardButton.WithCallbackData("Премии ", new CallBackDto(Dto_Objects.AllPrizesView, Dto_Action.Show).ToString())
+                },
+                new List<InlineKeyboardButton>()
+                {
+                    InlineKeyboardButton.WithCallbackData("Мои задачи ", new CallBackDto(Dto_Objects.TodoMenuView, Dto_Action.Show).ToString())
                 },
                 new List<InlineKeyboardButton>()
                 {

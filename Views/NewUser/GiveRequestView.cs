@@ -29,7 +29,8 @@ namespace BotRiveGosh.Views.NewUser
             _userService = userService;
         }
 
-        public override async Task Show(Update update, CancellationToken ct, MessageType messageType = MessageType.defaultMessage)
+        public override async Task Show(Update update, CancellationToken ct, 
+            MessageType messageType = MessageType.defaultMessage, string inputDto = "")
         {
             InitializeMessageInfo(update);
 

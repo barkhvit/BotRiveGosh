@@ -71,13 +71,12 @@ namespace BotRiveGosh.Services
 
         public async Task<Core.Entities.User?> GetUserByIdAsync(Guid id, CancellationToken ct)
         {
-            var user = await _userRepository.GetByIdAsync(id, ct);
-            return user;
+            return await _userRepository.GetByIdAsync(id, ct);
         }
 
-        public Task<Core.Entities.User?> GetUserByTelegramIdAsync(long telegramId, CancellationToken ct)
+        public async Task<Core.Entities.User?> GetUserByTelegramIdAsync(long telegramId, CancellationToken ct)
         {
-            throw new NotImplementedException();
+            return await _userRepository.GetByTelegramIdAsync(telegramId, ct);
         }
     }
 }

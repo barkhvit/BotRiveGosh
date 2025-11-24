@@ -12,7 +12,7 @@ namespace BotRiveGosh.Core.DTOs
         public string Action { get; set; }
         public Guid? Id { get; set; }
 
-        public CallBackDto(string _object, string _action = "", Guid? _id = null)
+        public CallBackDto(string _object, string _action = "", Guid? _id = null, string? parameter1 = null)
         {
             Object = _object;
             Action = _action;

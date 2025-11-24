@@ -21,7 +21,8 @@ namespace BotRiveGosh.Views.Prize
             _prizesService = prizesService;
         }
 
-        public override async Task Show(Update update, CancellationToken ct, MessageType messageType = MessageType.defaultMessage)
+        public override async Task Show(Update update, CancellationToken ct, 
+            MessageType messageType = MessageType.defaultMessage, string inputDto = "")
         {
             InitializeMessageInfo(update);
 
@@ -41,7 +42,7 @@ namespace BotRiveGosh.Views.Prize
         {
             var prizeButtons = prizes.Select(p => InlineKeyboardButton.WithCallbackData(
                 $"{p.Name}",
-                new CallBackDto(Dto_Objects.DetailPrizeView, Dto_Action.Show, _id: p.Id).ToString()))
+                new CallBackDto(Dto_Objects.PrizeMenuView, Dto_Action.Show, _id: p.Id).ToString()))
                 .ToList();
 
             // Группируем кнопки по две в ряду

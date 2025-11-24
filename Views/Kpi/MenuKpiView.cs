@@ -1,5 +1,6 @@
 ﻿using BotRiveGosh.Core.Common.Enums;
 using BotRiveGosh.Core.DTOs;
+using BotRiveGosh.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,13 +16,22 @@ namespace BotRiveGosh.Views.Kpi
     {
         //меню KPI кассира
         //Dto_Objects.Kpi  Dto_Action.ShowMenu
-        public MenuKpiView(ITelegramBotClient botClient) : base(botClient)
+
+        private readonly IPrizesService _prizesService;
+        public MenuKpiView(ITelegramBotClient botClient, IPrizesService prizesService) : base(botClient)
         {
+            _prizesService = prizesService;
         }
 
-        public override async Task Show(Update update, CancellationToken ct, MessageType messageType = MessageType.defaultMessage)
+        public override async Task Show(Update update, CancellationToken ct, 
+            MessageType messageType = MessageType.defaultMessage, string inputDto = "")
         {
             InitializeMessageInfo(update);
+
+            //id премии kpi кассира
+            var prize = await _prizesService.GetByNameAsync(Dto_NamePrizes.KpiCashier, ct);
+            if (prize == null) throw new ArgumentException("Ошибка в получении prize в MenuKpiView");
+
             string text = "Выберите действие с Kpi:";
             List<InlineKeyboardButton[]> buttons = new();
             List<InlineKeyboardButton> row = new()
@@ -31,7 +41,7 @@ namespace BotRiveGosh.Views.Kpi
             };
             List<InlineKeyboardButton> row2 = new()
             {
-                InlineKeyboardButton.WithCallbackData("Условия",new CallBackDto(Dto_Objects.DetailPrizeView, Dto_Action.ShowKpiPrize).ToString()),
+                InlineKeyboardButton.WithCallbackData("Условия",new CallBackDto(Dto_Objects.DetailPrizeView, Dto_Action.Show, _id: prize?.Id).ToString()),
                 InlineKeyboardButton.WithCallbackData("🏠 Главное меню",new CallBackDto(Dto_Objects.MainMenuView, Dto_Action.ShowMenu).ToString()),
             };
             buttons.Add(row.ToArray());
