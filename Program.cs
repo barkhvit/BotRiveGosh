@@ -26,7 +26,7 @@ namespace BotRiveGosh
                 IHost host = Host.CreateDefaultBuilder(args)
                 .UseWindowsService(options =>
                 {
-                    options.ServiceName = "RiveGoshService";
+                    options.ServiceName = "BotRiveGoshService";
                 })
                 .ConfigureServices(ConfigureServices)
                 .ConfigureLogging(logging =>
@@ -35,7 +35,7 @@ namespace BotRiveGosh
                     logging.AddDebug();
                     logging.AddEventLog(settings =>
                     {
-                        settings.SourceName = "RiveGoshService";
+                        settings.SourceName = "BotRiveGoshService";
                     });
                 })
                 .Build();
