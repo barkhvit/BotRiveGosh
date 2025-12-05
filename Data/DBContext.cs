@@ -1,4 +1,5 @@
-﻿using BotRiveGosh.Data.Models;
+﻿using BotRiveGosh.Core.Entities;
+using BotRiveGosh.Data.Models;
 using LinqToDB;
 using LinqToDB.Data;
 using System;
@@ -18,6 +19,7 @@ namespace BotRiveGosh.Data
         public ITable<KpiModel> kpis => this.GetTable<KpiModel>();
         public ITable<PrizesModel> prizes => this.GetTable<PrizesModel>();
         public ITable<TodoModel> todos => this.GetTable<TodoModel>();
+        public ITable<NotificationModel> notifications => this.GetTable<NotificationModel>();
 
         // Метод для вызова функции
         public IEnumerable<KpiResultModel> GetKpi(string searchName)

@@ -11,6 +11,30 @@ namespace BotRiveGosh.Data
 {
     internal static class ModelMapper
     {
+        public static Notification MapFromModel(NotificationModel model)
+        {
+            return new Notification()
+            {
+                Id = model.Id,
+                Subject = model.Subject,
+                Text = model.Text,
+                SendTo = model.SendTo,
+                Sent = model.Sent,
+                User = ModelMapper.MapFromModel(model.User)
+            };
+        }
+        public static NotificationModel MapToModel(Notification entity)
+        {
+            return new NotificationModel()
+            {
+                Id = entity.Id,
+                Subject = entity.Subject,
+                Text = entity.Text,
+                SendTo = entity.SendTo,
+                Sent = entity.Sent,
+                UserId = entity.User.Id
+            };
+        }
         public static Todo MapFromModel(TodoModel model)
         {
             return new Todo()

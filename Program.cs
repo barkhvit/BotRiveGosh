@@ -60,8 +60,8 @@ namespace BotRiveGosh
             // Регистрируем бота
             services.AddSingleton<ITelegramBotClient>(sp =>
             {
-                string token = Environment.GetEnvironmentVariable("Bot_RiveGosh", EnvironmentVariableTarget.Machine);
-                //string token = Environment.GetEnvironmentVariable("BotForTesting", EnvironmentVariableTarget.Machine);
+                //string token = Environment.GetEnvironmentVariable("Bot_RiveGosh", EnvironmentVariableTarget.Machine);
+                string token = Environment.GetEnvironmentVariable("BotForTesting", EnvironmentVariableTarget.Machine);
                 return new TelegramBotClient(token);
             });
 
@@ -86,6 +86,7 @@ namespace BotRiveGosh
             services.AddScoped<IKpiRepository, SqlKpiRepository>();
             services.AddScoped<IPrizesRepository, SqlPrizesRepository>();
             services.AddScoped<ITodoRepository, SqlTodoRepository>();
+            services.AddScoped<INotificationRepository, SqlNotificationRepository>();
 
             //сервисы
             services.AddScoped<IUserService, UserService>();
@@ -95,6 +96,7 @@ namespace BotRiveGosh
             services.AddScoped<InputFileService>();
             services.AddScoped<IPrizesService, PrizesService>();
             services.AddScoped<ITodoService, TodoService>();
+            services.AddScoped<INotificationService, NotificationService>();
 
             //Views
             // Автоматически регистрируем все классы, наследующие от BaseView
@@ -124,11 +126,13 @@ namespace BotRiveGosh
                 };
             });
 
-            // Фоновый сервис для бота
+            // фоновый сервис для бота
             services.AddHostedService<BotBackgroundService>();
 
-            // фоновый сервис для нотификаций
+            // фоновые сервисы
             services.AddHostedService<NotificationBackgroundService>();
+            services.AddHostedService<SendNotifBackgroundService>();
+            services.AddHostedService<TodoNotificationBackgroundService>();
         }
     }
 }

@@ -22,6 +22,16 @@ namespace BotRiveGosh.Services
             return await _todoRepository.AddAsync(todo, ct);
         }
 
+        public async Task<IReadOnlyList<Todo>> GetActiveAndOverdueAsync(CancellationToken ct)
+        {
+            return await _todoRepository.GetActiveAndOverdueAsync(ct);
+        }
+
+        public async Task<IReadOnlyList<Todo>> GetActiveByFinishedDateAsync(DateOnly finishedDate, CancellationToken ct)
+        {
+            return await _todoRepository.GetActiveByFinishedDateAsync(finishedDate, ct);
+        }
+
         public async Task<IReadOnlyList<Todo>> GetActiveByUserid(Guid Id, CancellationToken ct)
         {
             return await _todoRepository.GetByUserAndStatusAsync(Id, false, ct);

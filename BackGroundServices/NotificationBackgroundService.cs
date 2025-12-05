@@ -29,7 +29,7 @@ namespace BotRiveGosh.BackGroundServices
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            using (var scope = _serviceProvider.CreateScope())
+            using (var scope = _serviceProvider.CreateScope()) 
             {
                 try
                 {

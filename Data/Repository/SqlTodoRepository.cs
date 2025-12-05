@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Telegram.Bot.Types;
 
 namespace BotRiveGosh.Data.Repository
 {
@@ -16,12 +17,16 @@ namespace BotRiveGosh.Data.Repository
         {
             _factory = factory;
         }
+
+        // ADD
         public async Task<int> AddAsync(Todo todo, CancellationToken ct)
         {
             using var dbContext = _factory.CreateDataContext();
             return await dbContext.InsertAsync(ModelMapper.MapToModel(todo), token: ct);
         }
 
+
+        // DELETE
         public async Task<bool> DeleteAsync(Guid id, CancellationToken ct)
         {
             using var dbContext = _factory.CreateDataContext();
@@ -37,6 +42,32 @@ namespace BotRiveGosh.Data.Repository
             return await dbContext.todos
                 .Where(t => t.UserId == userId && t.IsCompleted == true)
                 .DeleteAsync(ct);
+        }
+
+
+        // GET
+        public async Task<IReadOnlyList<Todo>> GetActiveAndOverdueAsync(CancellationToken ct)
+        {
+            using var dbContext = _factory.CreateDataContext();
+            var todos = await dbContext.todos
+                .LoadWith(t => t.User)
+                .Where(t => t.FinishedAt < DateOnly.FromDateTime(DateTime.UtcNow) && t.IsCompleted == false)
+                .OrderBy(t => t.FinishedAt)
+                .Select(t => ModelMapper.MapFromModel(t))
+                .ToListAsync(ct);
+            return todos ?? new List<Todo>();
+        }
+
+        public async Task<IReadOnlyList<Todo>> GetActiveByFinishedDateAsync(DateOnly finishedDate, CancellationToken ct)
+        {
+            using var dbContext = _factory.CreateDataContext();
+            var todos = await dbContext.todos
+                .LoadWith(t => t.User)
+                .Where(t => t.FinishedAt == finishedDate && t.IsCompleted == false)
+                .OrderBy(t => t.FinishedAt)
+                .Select(t => ModelMapper.MapFromModel(t))
+                .ToListAsync(ct);
+            return todos ?? new List<Todo>();
         }
 
         public async Task<Todo?> GetById(Guid Id, CancellationToken ct)
@@ -73,6 +104,8 @@ namespace BotRiveGosh.Data.Repository
             return todos ?? new List<Todo>();
         }
 
+
+        // UPDATE
         public async Task<bool> MarkAsCompletedAsync(Guid id, CancellationToken ct)
         {
             using var dbContext = _factory.CreateDataContext();

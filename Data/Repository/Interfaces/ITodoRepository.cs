@@ -16,6 +16,8 @@ namespace BotRiveGosh.Data.Repository.Interfaces
         Task<IReadOnlyList<Todo>> GetByUserIdAsync(Guid userId, CancellationToken ct);
         Task<IReadOnlyList<Todo>> GetByUserAndStatusAsync(Guid userId, bool isCompleted, CancellationToken ct);
         Task<Todo?> GetById(Guid Id, CancellationToken ct);
+        Task<IReadOnlyList<Todo>> GetActiveByFinishedDateAsync(DateOnly finishedDate, CancellationToken ct);
+        Task<IReadOnlyList<Todo>> GetActiveAndOverdueAsync(CancellationToken ct);
 
         // UPDATE
         Task<int> UpdateAsync(Todo todo, CancellationToken ct);
