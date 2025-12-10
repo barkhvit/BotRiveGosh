@@ -15,6 +15,7 @@ namespace BotRiveGosh.Data.Repository
             try
             {
                 string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "Downloads");
+                //string directoryPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? AppDomain.CurrentDomain.BaseDirectory, "Downloads");
                 string filePath = Path.Combine(directoryPath, "kpi.csv");
 
                 // Проверяем существование директории и файла

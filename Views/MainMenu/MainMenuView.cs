@@ -52,10 +52,6 @@ namespace BotRiveGosh.Views.MainMenu
                 new List<InlineKeyboardButton>()
                 {
                     InlineKeyboardButton.WithCallbackData("Мои задачи ", new CallBackDto(Dto_Objects.TodoMenuView, Dto_Action.Show).ToString())
-                },
-                new List<InlineKeyboardButton>()
-                {
-                    InlineKeyboardButton.WithCallbackData("О боте", new CallBackDto(Dto_Objects.AboutBotView, Dto_Action.AboutBotShow).ToString())
                 }
             };
             return new InlineKeyboardMarkup(buttons);

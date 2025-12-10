@@ -1,4 +1,5 @@
-﻿using BotRiveGosh.Services.Interfaces;
+﻿using BotRiveGosh.Core.DTOs;
+using BotRiveGosh.Services.Interfaces;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Telegram.Bot;
+using Telegram.Bot.Types.ReplyMarkups;
 
 namespace BotRiveGosh.BackGroundServices
 {
@@ -44,8 +46,30 @@ namespace BotRiveGosh.BackGroundServices
                     {
                         foreach(var n in notificationForSending)
                         {
+                            //в зависимости от темы делаем кнопку, по умолчанию только главное меню
+                            List<InlineKeyboardButton> firstRow = new List<InlineKeyboardButton>()
+                            {
+                                InlineKeyboardButton.WithCallbackData("🏠 Главное меню", new CallBackDto(Dto_Objects.MainMenuView, Dto_Action.ShowMenuNewMessage).ToString())
+                            };
+
+                            if (n.Subject.Contains("todayTodo"))
+                            {
+                                firstRow.Add(InlineKeyboardButton.WithCallbackData("Подробнее..", new CallBackDto(Dto_Objects.TodoEditView, Dto_Action.ShowToday).ToString()));
+                            }
+
+                            if (n.Subject.Contains("overdueTodо"))
+                            {
+                                firstRow.Add(InlineKeyboardButton.WithCallbackData("Подробнее..", new CallBackDto(Dto_Objects.TodoEditView, Dto_Action.ShowOverdue).ToString()));
+                            }
+
+                            var buttons = new List<List<InlineKeyboardButton>>()
+                            {
+                                firstRow
+                            };
+
                             //отправляем сообщение пользователю
-                            await _botClient.SendMessage(n.User.TelegramId, n.Text, cancellationToken: ct);
+                            await _botClient.SendMessage(n.User.TelegramId, n.Text, cancellationToken: ct,
+                                replyMarkup: new InlineKeyboardMarkup(buttons));
 
                             //делаем сообщение отправленным
                             await _notificationService.MarkAsSentAsync(n.Id, ct);

@@ -93,6 +93,7 @@ namespace BotRiveGosh.Services
 
                 // Формируем полный путь для сохранения
                 var downloadsPath = Path.Combine(Directory.GetCurrentDirectory(), "Downloads");
+                //var downloadsPath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) ?? AppDomain.CurrentDomain.BaseDirectory, "Downloads");
                 Directory.CreateDirectory(downloadsPath);
                 var filePath = Path.Combine(downloadsPath, fileName);
 

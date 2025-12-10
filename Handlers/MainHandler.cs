@@ -206,7 +206,8 @@ namespace BotRiveGosh.Handlers
             var commands = new List<BotCommand>
             {
                 new BotCommand { Command = "start", Description = "🏠 Главное меню" },
-                new BotCommand { Command = "kpi", Description = "📊 KPI кассира" }
+                new BotCommand { Command = "kpi", Description = "📊 KPI кассира" },
+                new BotCommand { Command = "about", Description = "О боте"}
             };
 
             await _botClient.SetMyCommands(

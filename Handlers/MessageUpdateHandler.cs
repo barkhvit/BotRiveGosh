@@ -13,10 +13,15 @@ namespace BotRiveGosh.Handlers
     {
         private readonly PrizeMenuView _prizeMenuView;
         private readonly IPrizesService _prizesService;
-        public MessageUpdateHandler(PrizeMenuView prizeMenuView, IPrizesService prizesService)
+        private readonly MainMenuView _mainMenuView;
+        private readonly AboutBotView _aboutBotView;
+        public MessageUpdateHandler(PrizeMenuView prizeMenuView, IPrizesService prizesService,
+            MainMenuView mainMenuView, AboutBotView aboutBotView)
         {
             _prizeMenuView = prizeMenuView;
             _prizesService = prizesService;
+            _mainMenuView = mainMenuView;
+            _aboutBotView = aboutBotView;
         }
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken ct)
         {
@@ -24,6 +29,14 @@ namespace BotRiveGosh.Handlers
 
             try
             {
+                //обрабочик для стикеров
+                if(update.Message?.Sticker != null)
+                {
+                    var sticker = update.Message?.Sticker;
+                    if(sticker!=null)
+                        Console.WriteLine($"Получен стикер:{sticker.FileId}");
+                }
+
                 switch (Text)
                 {
                     case "/kpi":
@@ -33,6 +46,14 @@ namespace BotRiveGosh.Handlers
                             string inputDto = new CallBackDto(Dto_Objects.PrizeMenuView, Dto_Action.Show, _id:prize.Id).ToString();
                             await _prizeMenuView.Show(update, ct, inputDto: inputDto);
                         }
+                        break;
+
+                    case "/about":
+                        await _aboutBotView.Show(update, ct, Core.Common.Enums.MessageType.newMessage);
+                        break;
+
+                    default:
+                        await _mainMenuView.Show(update, ct, Core.Common.Enums.MessageType.newMessage);
                         break;
                 }
             }
